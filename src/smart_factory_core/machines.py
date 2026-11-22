@@ -36,6 +36,25 @@ class Machine:
         self.status = "stopped"
         print(f"[系統訊息]{self.machine_id}機器已關機")
 
+    @property
+    def is_idle(self) -> bool:
+        return self.status == "running" and self.current_job is None
+
+    def finish(self) -> None:
+        if self.current_job is not None:
+            self.current_job.status = "done"
+            self.current_job = None
+    
+
+    @property
+    def is_idle(self) -> bool:
+        return self.status == "running" and self.current_job is None
+
+    def finish(self) -> None:
+        if self.current_job is not None:
+            self.current_job.status = "done"
+            self.current_job = None
+
     def process(self, job: Job) -> None:
         if self.status == "running":
             self.current_job = job
