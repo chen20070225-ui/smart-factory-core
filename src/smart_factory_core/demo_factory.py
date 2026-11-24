@@ -3,6 +3,8 @@ from smart_factory_core.machines import AssemblyProcessor, Machine, PaintProcess
 from smart_factory_core.models import Job
 
 
+
+
 def main() -> None:
     factory = Factory()
     factory.add_machine(Machine("ASM-01", AssemblyProcessor("螺絲鎖附")))

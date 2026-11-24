@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+from smart_factory_core.errors import MachineDownError
 from smart_factory_core.models import Job
 
 
@@ -56,10 +57,10 @@ class Machine:
             self.current_job = None
 
     def process(self, job: Job) -> None:
-        if self.status == "running":
-            self.current_job = job
-            job.status = "running"
-            print(f"[系統訊息]{self.machine_id}開始處理{job}")
-            self.processor.process(self.machine_id, job.job_id)
-        else:
-            print(f"[系統訊息]{self.machine_id}尚未開機，無法進行{self.processor.task_name}")
+        if self.status != "running":
+                       raise MachineDownError(
+                f"{self.machine_id}尚未開機，無法進行{self.processor.task_name}"
+            )
+        job.status = "running"
+        print(f"[系統訊息]{self.machine_id}開始處理{job}")
+        self.processor.process(self.machine_id,job.job_id)
