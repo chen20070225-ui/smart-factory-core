@@ -1,8 +1,10 @@
+import logging
 from dataclasses import dataclass
 
 from smart_factory_core.errors import MachineDownError
 from smart_factory_core.models import Job
 
+logger = logging.getLogger(__name__)
 
 @dataclass
 class AssemblyProcessor:
@@ -10,7 +12,7 @@ class AssemblyProcessor:
     task_name = "裝貨作業"
 
     def process(self, machine_id: str, job: str) -> None:
-        print(f"[裝貨作業]機器{machine_id}({self.station_type}站)正在組裝工件{job}")
+      logger.info("%s(%s站)正在組裝%s",machine_id,self.station_type,job)
 
 
 @dataclass
@@ -19,8 +21,7 @@ class PaintProcessor:
     task_name = "噴漆作業"
 
     def process(self, machine_id: str, job: str) -> None:
-        print(f"[噴漆作業]機器{machine_id}正在以{self.color}為{job}工件噴漆")
-
+       logger.info("%s正在以%s為%s噴漆",machine_id,self.color,job)
 
 @dataclass
 class Machine:
@@ -31,11 +32,12 @@ class Machine:
 
     def start(self) -> None:
         self.status = "running"
-        print(f"[系統訊息]{self.machine_id}機器已開機")
+        logger.info("%s已開機",self.machine_id)
 
     def stop(self) -> None:
         self.status = "stopped"
-        print(f"[系統訊息]{self.machine_id}機器已關機")
+        logger.info("%s已關機",self.machine_id)
+
 
     @property
     def is_idle(self) -> bool:
@@ -58,9 +60,10 @@ class Machine:
 
     def process(self, job: Job) -> None:
         if self.status != "running":
-                       raise MachineDownError(
+            raise MachineDownError(
                 f"{self.machine_id}尚未開機，無法進行{self.processor.task_name}"
             )
+        self.current_job = job
         job.status = "running"
-        print(f"[系統訊息]{self.machine_id}開始處理{job}")
-        self.processor.process(self.machine_id,job.job_id)
+        logger.info("%s 開始處理 %s", self.machine_id, job)
+        self.processor.process(self.machine_id, job.job_id)

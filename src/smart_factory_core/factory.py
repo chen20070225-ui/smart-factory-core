@@ -1,8 +1,10 @@
+import logging
 from collections import Counter, defaultdict, deque
 
 from smart_factory_core.machines import Machine
 from smart_factory_core.models import Job
 
+logger = logging.getLogger(__name__)
 
 class Factory:
     def __init__(self) -> None:
@@ -13,9 +15,11 @@ class Factory:
         if machine.machine_id in self.machines:
             raise ValueError(f"機器編號重複：{machine.machine_id}")
         self.machines[machine.machine_id] = machine
+        logger.info("加入機器%s",machine.machine_id)
 
     def submit(self, job: Job) -> None:
         self.queue.append(job)
+        logger.info("收到 %s，隊伍長度：%d", job, len(self.queue))
 
     def dispatch(self) -> None:
         for machine in self.machines.values():

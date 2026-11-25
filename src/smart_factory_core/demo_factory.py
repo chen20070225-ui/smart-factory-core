@@ -1,11 +1,17 @@
+import logging
+
 from smart_factory_core.factory import Factory
 from smart_factory_core.machines import AssemblyProcessor, Machine, PaintProcessor
 from smart_factory_core.models import Job
 
 
-
-
 def main() -> None:
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+        datefmt="%H:%M:%S",
+    )
+
     factory = Factory()
     factory.add_machine(Machine("ASM-01", AssemblyProcessor("螺絲鎖附")))
     factory.add_machine(Machine("PNT-01", PaintProcessor("blue")))

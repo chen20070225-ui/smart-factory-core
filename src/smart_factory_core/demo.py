@@ -1,9 +1,19 @@
+import logging
+
 from smart_factory_core.errors import MachineDownError
 from smart_factory_core.machines import AssemblyProcessor, Machine, PaintProcessor
 from smart_factory_core.models import Job
 
+logger = logging.getLogger(__name__)
+
 
 def main() -> None:
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+        datefmt="%H:%M:%S",
+    )
+
     asm = Machine(machine_id="ASM-01", processor=AssemblyProcessor(station_type="螺絲鎖附"))
     abc = Machine(machine_id="AAA-01", processor=PaintProcessor(color="blue"))
 
@@ -15,7 +25,7 @@ def main() -> None:
     try:
         asm.process(job1)
     except MachineDownError as e:
-        print(f"[警告]{e}")
+        logger.warning("%s", e)
 
     print("\n--- 2. 開機後處理 ---")
     asm.start()
